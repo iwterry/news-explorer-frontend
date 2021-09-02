@@ -1,23 +1,26 @@
 .news-card-list {
   display: grid;
-  grid-template-columns: 288px;
+  grid-template-columns: 1fr;
   gap: 10px 0;
 
-  padding: 0;
+  padding: 0 16px;
   margin: 0;
   list-style: none;
 }
 
 @media screen and (min-width: 768px) {
   .news-card-list {
-    grid-template-columns: repeat(3, 224px);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+
+    padding: 0 40px;
   }
 }
 
 @media screen and (min-width: 1280px) {
   .news-card-list {
-    grid-template-columns: repeat(3, 400px);
     gap: 16px;
+
+    padding: 0 104px;
   }
 }
