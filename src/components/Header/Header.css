@@ -21,7 +21,6 @@
 
 .header_expanded {
   position: relative;
-  z-index: 0;
 }
 
 .header_expanded::after {

@@ -44,7 +44,7 @@ class Header extends Component {
         </div>
         <Nav 
           isSavedNewsHeader={isSavedNewsHeader} 
-          additionalCssClassNamesStr='header__nav header__nav_shown'    
+          additionalCssClassNamesStr={`header__nav ${isMobileNavShown ? 'header__nav_shown' : ''}`}    
         />
       </header>
     );
