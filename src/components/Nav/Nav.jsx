@@ -1,24 +1,24 @@
 import './Nav.css';
 
 function Nav(props) {
-  const { isSavedNewsHeader, additionalCssClassNamesStr='' } = props;
+  const { isLoggedIn, additionalCssClassNamesStr='' } = props;
 
   return (
     <nav className={`nav ${additionalCssClassNamesStr}`}>
     <ul className="nav__list">
       <li className="nav__list-item">
-        <a href="/" className="nav__list-link nav__list-link_type_home">
+        <a href="/" className="nav__list-link nav__list-link_type_home" onClick={(e) => e.preventDefault()}>
           Home
         </a>
       </li>
-      { !isSavedNewsHeader && (
+      { !isLoggedIn && (
         <li className="nav__list-item nav__list-item_type_sign-in">
           <a href="/" className="nav__list-link nav__list-link_button nav__list-link_type_sign-in">
             Sign in
           </a>
         </li>
       )}
-      { isSavedNewsHeader && (
+      { isLoggedIn && (
         <>
           <li className="nav__list-item nav__list-item_type_saved-news">
             <a href="/" className="nav__list-link nav__list-link_type_saved-news">
