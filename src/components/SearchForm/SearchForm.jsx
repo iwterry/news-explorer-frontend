@@ -3,20 +3,31 @@ import './SearchForm.css'
 
 class SearchForm extends Component {
   state = {
-    query: ''
+    query: '',
+    isSearching: false,
   };
 
   handleInputChange = ({ target }) => {
     this.setState({ query: target.value });
   };
 
-  handleSearch = (evt) => {
+  validateQuery() {
+    const { validate } = this.props;
+    const { query } = this.state;
+    return  typeof validate === 'function' ? validate(query) : true;
+  }
+
+  handleSearch = async (evt) => {
     evt.preventDefault();
-    console.log('submit');
+    this.setState({ isSearching: true });
+
+    await this.props.onSearch(this.state.query);
+
+    this.setState({ isSearching: false });
   };
 
   render() {
-    const { query } = this.state;
+    const { query, isSearching } = this.state;
 
     return (
       <form name="search-form" className="search-form" noValidate={true} onSubmit={this.handleSearch}>
@@ -30,7 +41,9 @@ class SearchForm extends Component {
           onChange={this.handleInputChange}
           required={true}
         />
-        <button type="submit" className="search-form__search-btn">Search</button>
+        <button type="submit" className="search-form__search-btn" disabled={!this.validateQuery() || isSearching}>
+          {isSearching ? 'Searching' : 'Search' }
+        </button>
       </form>
     );
   }
