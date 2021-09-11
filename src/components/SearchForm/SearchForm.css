@@ -16,12 +16,8 @@
   margin-bottom: 16px;
 
   font-size: 16px;
-  line-height: calc(22 / 16);
+  line-height: 1.37;
   color: var(--primary-color);
-}
-
-.search-form__query-field:focus {
-  outline: none;
 }
 
 .search-form__query-field::placeholder {
@@ -37,7 +33,7 @@
 
   font-weight: 500;
   font-size: 18px;
-  line-height: calc(24 / 18);
+  line-height: 1.33;
   color: #fff;
   text-align: center;
 
