@@ -1,0 +1,30 @@
+.not-found {
+  text-align: center;
+
+  --primary-colory: #1a1b22;
+  --simulator-gray-color: #b6bcbf;
+  --max-width-text: 356px;
+}
+
+.not-found__heading, .not-found__description {
+  max-width: 356px;
+}
+
+.not-found__heading {
+  margin: 40px auto 16px;
+
+  font-family: 'Roboto Slab', serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--primary-colory);
+}
+
+.not-found__description {
+  margin: 0 auto;
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  line-height: 1.33;
+  color: var(--simulator-gray-color);
+}
