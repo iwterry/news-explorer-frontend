@@ -1,0 +1,41 @@
+.primary-form-wrap {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 320px;
+  min-height: 512px;
+  padding: 16px;
+
+  background-color: #fff;
+}
+
+.primary-form-wrap__link-wrap {
+  margin-top: 16px;
+ 
+
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.21; 
+  text-align: center;
+}
+
+.primary-form-wrap__link {
+  color: #2f71e5;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+
+@media screen and (min-width: 768px) {
+  .primary-form-wrap {
+    width: 430px;
+    min-height: auto;
+    padding: 34px 36px 28px;
+  }
+
+  .primary-form-wrap__link-wrap {
+    margin-top: 16px;
+  }
+}
