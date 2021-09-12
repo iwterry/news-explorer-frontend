@@ -107,7 +107,6 @@
 }
 
 .header__nav {
-  box-sizing: border;
   position: absolute;
   top: 100%;
   left: auto;
@@ -116,6 +115,7 @@
   justify-content: center;
   width: 100%;
   max-height: 0;
+  padding: 0;
 
   overflow-y: hidden;
 

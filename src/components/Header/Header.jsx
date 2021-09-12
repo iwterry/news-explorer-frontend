@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Nav from '../Nav/Nav';
 
 import './Header.css'
@@ -24,12 +25,13 @@ class Header extends Component {
   };
 
   handleCollapseNav = (event) => {
-    const { target, currentTarget } = event;
+    const { target } = event;
+    console.log(target);
     // Note: using Refs here instead of classnames or data attributes because I feel it is less brittle.
     if(
       (target === this.headerRef.current)
       || (target === this.collapseNavBtnRef.current)
-      || (currentTarget.tagName.toLowerCase() === 'a') // for all <a> elements
+      || target.dataset.canHideMobileNav
     ) {
       this.setState({ isMobileNavShown: false });
       document.removeEventListener('keydown', this.handleEscKey);
@@ -86,20 +88,15 @@ class Header extends Component {
 
   render() {
     const { isMobileNavShown } = this.state;
-    const { isLoggedIn } = this.props;
-
     const headerClassNames = this.getHeaderClassNames(); 
 
     return (
       <header className={headerClassNames} onClick={this.handleCollapseNav} ref={this.headerRef}>
         <div className="header__primary-wrap">
-          <a href="/" className="header__app-name">NewsExplorer</a>
+          <Link to="/" className="header__app-name">NewsExplorer</Link>
           {this.getMenuButton()}
         </div>
-        <Nav 
-          isLoggedIn={isLoggedIn} 
-          additionalCssClassNamesStr={`header__nav ${isMobileNavShown ? 'header__nav_shown' : ''}`}    
-        />
+        <Nav additionalCssClassNamesStr={`header__nav ${isMobileNavShown ? 'header__nav_shown' : ''}`} />  
       </header>
     );
   }
