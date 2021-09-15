@@ -32,40 +32,36 @@ const users = [
 
 let currentUser = users[0];
 
+const TIME_TO_TAKE = 500;
+
 export function getSavedArticles() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log('success');
       resolve(savedArticles);
-      // reject('something went wrong');
-    }, 2000);
+    }, TIME_TO_TAKE);
   });
 }
 
 export function createSavedArticle(data) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log('success');
       const newArticle = { ...data, _id: String(savedArticles.length + 1) }
       savedArticles.push(newArticle);
       resolve({ ...newArticle });
-      // reject('something went wrong');
-    }, 2000);
+    }, TIME_TO_TAKE);
   });
 }
 
 export function deleteSavedArticle(savedArticleId) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log('success');
       const index = savedArticles.findIndex(({ _id }) => _id === savedArticleId);
 
       if (index < 0) return reject(new Error('not found'));
 
       savedArticles.splice(index, 1);
       resolve();
-      // reject('something went wrong');
-    }, 2000);
+    }, TIME_TO_TAKE);
   });
 }
 
@@ -74,12 +70,12 @@ export function getCurrentUser(token) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if(!token) return reject(new Error('token required for to get current user data'));
-       
+
       resolve({
         name: currentUser.name,
         email: currentUser.email,
       });
-    });
+    }, TIME_TO_TAKE);
   });
 }
 
@@ -96,7 +92,7 @@ export function login(email, password) {
         token: 'fake token',
       });
       
-    }, 2000);
+    }, TIME_TO_TAKE);
   });
 }
 
@@ -105,7 +101,7 @@ export function register(username, email, password) {
     setTimeout(() => {
      const user = users.find((someUser) => someUser.email === email);
       if (user) return reject(new Error('Must use a different address'));
-      console.log('username', username)
+      
       const newUser = {
         _id: String(users.length + 1),
         name: username,
@@ -117,6 +113,6 @@ export function register(username, email, password) {
 
       delete newUser.password;
       resolve(newUser);
-    }, 2000);
+    }, TIME_TO_TAKE);
   });
 }
