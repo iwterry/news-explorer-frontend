@@ -17,12 +17,14 @@ class SearchForm extends Component {
     return  typeof validate === 'function' ? validate(query) : true;
   }
 
-  handleSearch = async (evt) => {
+  handleSubmit = async (evt) => {
     evt.preventDefault();
+    
+    const { onSearch } = this.props;
+    const { query } = this.state;
+
     this.setState({ isSearching: true });
-
-    await this.props.onSearch(this.state.query);
-
+    await onSearch(query);
     this.setState({ isSearching: false });
   };
 
@@ -30,7 +32,7 @@ class SearchForm extends Component {
     const { query, isSearching } = this.state;
 
     return (
-      <form name="search-form" className="search-form" noValidate={true} onSubmit={this.handleSearch}>
+      <form name="search-form" className="search-form" noValidate={true} onSubmit={this.handleSubmit}>
         <input
           type="text"
           className="search-form__query-field"

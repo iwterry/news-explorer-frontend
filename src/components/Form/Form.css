@@ -59,7 +59,7 @@
 }
 
 .form__error-msg {
-  height: 15px; /* only used because will be invisible and helps to maintain height when there is no error message */
+  min-height: 15px;
   margin: 0;
 
   font-family: var(--inter-font);
@@ -76,7 +76,6 @@
 }
 
 .form__error-msg_visible {
-  height: auto; /* changing height back since no longer invisible and probably has an error message */
   visibility: visible;
   opacity: 1;
 }

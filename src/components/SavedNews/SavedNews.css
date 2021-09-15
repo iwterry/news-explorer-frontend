@@ -1,0 +1,21 @@
+.saved-news {
+  --primary-color: #1a1b22;
+  color: var(--primary-color);
+}
+
+.saved-news__articles-wrap {
+  padding: 24px 16px;
+  background-color: #f5f6f7;
+}
+
+@media screen and (min-width: 768px) {
+  .saved-news__articles-wrap {
+    padding: 32px 40px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .saved-news__articles-wrap {
+    padding: 62px 104px;
+  }
+}

@@ -1,0 +1,38 @@
+.registration-success {
+  padding: 43px 0 51px 36px;
+  --roboto-font: 'Roboto', sans-serif;
+  --inter-font: 'Inter', sans-serif;
+}
+
+.registration-success__message {
+  display: block;
+  max-width: 280px;
+  margin: 0;
+  margin-bottom: 14px;
+
+
+  font-family: var(--roboto-font);
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.16;
+  color: #000;
+}
+
+.registration-success__link {
+  font-family: var(--inter-font);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.22;
+  color: #2f71e5;
+  text-decoration: none;
+}
+
+@media screen and (min-width: 768px) {
+  .registration-success {
+    padding: 43px 0 51px 36px;
+  }
+
+  .registration-success__message {
+    max-width: 315px;
+  }
+}

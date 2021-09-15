@@ -23,7 +23,7 @@
   border-radius: 50%;
 
   background: conic-gradient( rgba(26, 27, 34, 1), rgba(209, 210, 214, 0));
-
+  background-color: inherit;
   animation: spin 750ms infinite linear;
 }
 
@@ -34,19 +34,8 @@
   height: 70px;
   border-radius: 50%;
   margin: auto;
-}
 
-/* 
-  Note: Placement of this declaration block must be after .preloader__spinner
-  due to how background-color needing to be set after background-image.
-*/
-.preloader, .preloader__spinner, .preloader__spinner::after {
   background-color: inherit;
-  /* 
-    Note: To make this component more flexible the parent of this component
-    need have a background-color and then the spinner will display according
-    to the Figma design. 
-  */
 }
 
 .preloader__description {

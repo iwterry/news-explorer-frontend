@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Nav from '../Nav/Nav';
+import Navigation from '../Navigation/Navigation';
 
 import './Header.css'
 
@@ -26,7 +26,6 @@ class Header extends Component {
 
   handleCollapseNav = (event) => {
     const { target } = event;
-    console.log(target);
     // Note: using Refs here instead of classnames or data attributes because I feel it is less brittle.
     if(
       (target === this.headerRef.current)
@@ -88,15 +87,21 @@ class Header extends Component {
 
   render() {
     const { isMobileNavShown } = this.state;
+    const { onLogout } = this.props;
     const headerClassNames = this.getHeaderClassNames(); 
 
     return (
       <header className={headerClassNames} onClick={this.handleCollapseNav} ref={this.headerRef}>
-        <div className="header__primary-wrap">
-          <Link to="/" className="header__app-name">NewsExplorer</Link>
-          {this.getMenuButton()}
+        <div className="header__content-wrap">
+          <div className="header__primary-wrap">
+            <Link to="/" className="header__app-name">NewsExplorer</Link>
+            {this.getMenuButton()}
+          </div>
+          <Navigation 
+            additionalCssClassNamesStr={`header__navigation ${isMobileNavShown ? 'header__navigation_shown' : ''}`} 
+            onLogout={onLogout}
+          />
         </div>
-        <Nav additionalCssClassNamesStr={`header__nav ${isMobileNavShown ? 'header__nav_shown' : ''}`} />  
       </header>
     );
   }

@@ -2,21 +2,6 @@ import { Component } from "react";
 import './Form.css';
 
 class Form extends Component {
-  // state = {
-  //   fields: {
-  //     email: '',
-  //     password: '',
-  //   },
-  //   errors: {
-  //     fields: {
-  //       email: '',
-  //       password: ''
-  //     },
-  //     form: '',
-  //   },
-  //   hasComponentMounted: false,
-  // };
-
   constructor(props) {
     super(props);
 
@@ -68,16 +53,13 @@ class Form extends Component {
 
     this.setState({ isSubmitting: true });
     try {
-      await this.props.onSubmit()
-      //this.setState({ fields: })
-      //throw new Error('something went wrong');
+      await this.props.onSubmit(this.state.fields)
       this.setState({ ...this.getResettedState() });
     } catch(err) {
       errors.form = err.message;
     }
     
     this.setState({ errors, isSubmitting: false });
-    console.log('submit');
   };
 
   getResettedState() {
@@ -103,7 +85,7 @@ class Form extends Component {
   }
 
   getInputFieldError(fieldName) {
-    const { formName = 'sign-in-form' } = this.props;
+    const { formName } = this.props.formInfo;
     const fieldDomElement = document.forms[formName].elements[fieldName];
 
     return {
@@ -134,12 +116,14 @@ class Form extends Component {
       fieldErrorClassNames += ' form__error-msg_visible';
     }
 
+    const { formName }= this.props.formInfo;
+    const id = `${formName}_${fieldName}`;
     return (
       <div className="form__input-field-group-wrap" key={fieldName}>
-        <label htmlFor={fieldName} className="form__input-field-label">{fieldLabel}</label>
+        <label htmlFor={id} className="form__input-field-label">{fieldLabel}</label>
         <input
           type={inputElementType}
-          id={fieldName}
+          id={id}
           className="form__input-field"
           name={fieldName}
           placeholder={fieldPlaceholder}
@@ -164,6 +148,7 @@ class Form extends Component {
       formName,
       fields: fieldsData,
     } = formInfo;
+
     return (
       <form name={formName} className="form" noValidate={true} onSubmit={this.handleSubmit}>
         <h3 className="form__heading">{formHeading}</h3>

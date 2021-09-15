@@ -2,12 +2,13 @@ import React from "react";
 
 import PrimaryFormWrap from "../PrimaryFormWrap/PrimaryFormWrap";
 import Popup from "../Popup/Popup";
-import Overlay from "../Overlay/Overlay";
 
 import fields from '../../utils/formFieldsMetadata';
 
 
 function Login(props) {
+  const { registrationPath, isReadyToLogin, history } = props;
+
   const formInfo = {
     formName: 'sign-in-form',
     heading: 'Sign in',
@@ -20,55 +21,32 @@ function Login(props) {
   };
 
   const  registrationLink = {
-    path: '/sign-up',
+    path: registrationPath,
     text: 'Sign up',
   };
 
-  // TODO: the states and handleSubmit are in testing phases and will be removed in the future
-  // as well as the <button> element
-  const [ isOverlayActive, setIsOverlayActive ] = React.useState(true); 
-  const [ shouldReset, setShouldReset ] = React.useState(false);
- 
-  const handleSubmit = () => {
-    console.log('submitting');
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-              resolve('okay');
-      setIsOverlayActive(false);
-      }, 2000);
-    });
-  };
+  async function onLogin(userDetails) {
+    await props.onLogin(userDetails);
+    console.log('onlogin');
+    history.replace('/');
 
-  const popupProps = {
-    children: (
-      <PrimaryFormWrap
-        formInfo={formInfo}
-        link={registrationLink}
-        onSubmit={handleSubmit}
-        shouldReset={shouldReset}
-      />
-    ),
-  };
+    // no catch block because component is not responsible for handling errors
+  }
+
+  function onClose() {
+    history.push('/');
+  }
 
   return (
   <>
-    {/* TODO: button only used for testing purposes */}
-    <button  onClick={() => {
-      setIsOverlayActive(true);
-      setShouldReset(false);
-    }}>
-      testing
-    </button>
-    <Overlay 
-      Component={Popup} 
-      isOverlayActive={isOverlayActive} 
-      isHidingSelfWhenOverlayNotActive={true} 
-      onHide={() => {
-        setIsOverlayActive(false);
-        setShouldReset(true);
-      }}
-      componentProps={popupProps}
-    />
+    <Popup isActive={isReadyToLogin} onClose={onClose}>
+      <PrimaryFormWrap
+        formInfo={formInfo}
+        link={registrationLink}
+        onSubmit={onLogin}
+        shouldReset={isReadyToLogin}
+      />
+    </Popup>
   </>
   );
 }
