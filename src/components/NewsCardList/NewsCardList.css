@@ -11,14 +11,14 @@
 
 @media screen and (min-width: 768px) {
   .news-card-list {
-    grid-template-columns: repeat(3, minmax(224px, 25%));
+    grid-template-columns: repeat(3, fit-content(32.5%));
     gap: 8px;
   }
 }
 
 @media screen and (min-width: 1280px) {
   .news-card-list {
-    grid-template-columns: repeat(3, 400px);
+    grid-template-columns: repeat(3, fit-content(400px));
     gap: 16px;
   }
 }

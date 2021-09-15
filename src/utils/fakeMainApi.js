@@ -26,7 +26,7 @@ const users = [
     "_id": "1",
     "name": "Jane",
     "email": "jane.doe@email.com",
-    "password": "Password123",
+    "password": "123",
   },
 ];
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory, useLocation } from 'react-router-dom';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
@@ -152,8 +152,8 @@ function App() {
           name: currentUserDetails.name,
           email: currentUserDetails.email,
         });
-      })
-      .catch((err) => console.log(err));
+
+      });
   }
 
   function handleUnauthenticatedBookmark() {
@@ -194,6 +194,7 @@ function App() {
   };
 
   const history = useHistory();
+  // const location = useLocation();
   const [ currentUser, setCurrentUser ] = React.useState({});
 
   const [ searchRequestInfo, setSearchRequestInfo ] = React.useState({
@@ -220,7 +221,9 @@ function App() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    requestCurrentUserInfo(token);
+    console.log(token);
+    requestCurrentUserInfo(token)
+      .catch((err) => console.log(err));;
   }, []);
 
   return (
@@ -250,6 +253,8 @@ function App() {
                 onLogin={handleLogin}
                 registrationPath={routes.register}
                 history={history}
+                location={location}
+                isLoggedIn={Boolean(currentUser.email)}
                 isReadyToLogin={location.pathname === routes.login}
               />
               <Register
