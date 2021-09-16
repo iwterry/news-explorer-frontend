@@ -101,8 +101,8 @@ function App() {
 
         setSavedNewsInfo({
           ...savedNewsInfo,
-          results: formattedArticle
-        })
+          results: [ ...savedNewsInfo.results, formattedArticle ],
+        });
       })
       .catch((err) => {
         console.log(err);

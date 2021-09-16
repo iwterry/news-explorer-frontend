@@ -31,7 +31,7 @@ const users = [
 ];
 
 let currentUser = users[0];
-
+let counter = savedArticles.length;
 const TIME_TO_TAKE = 500;
 
 export function getSavedArticles() {
@@ -45,7 +45,7 @@ export function getSavedArticles() {
 export function createSavedArticle(data) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const newArticle = { ...data, _id: String(savedArticles.length + 1) }
+      const newArticle = { ...data, _id: String(++counter) }
       savedArticles.push(newArticle);
       resolve({ ...newArticle });
     }, TIME_TO_TAKE);
