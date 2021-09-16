@@ -1,0 +1,94 @@
+.popup {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 0;
+  display: grid;
+  align-content: center;
+
+  visibility: hidden;
+  opacity: 0;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  transition-property: visibility, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: linear;
+}
+
+.popup_active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup__content-wrap {
+  overflow-y: auto;
+  
+  display: grid;
+  justify-content: center;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+}
+
+.popup__close-btn {
+  display: inline-block;
+
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: end;
+  align-self: end;
+  margin: 16px;
+
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+
+  background-image: url(../../images/cross.svg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  cursor: pointer;
+  background-color: transparent;
+}
+
+
+.popup__main-content-wrap {
+  display: grid;
+  grid-template-columns: 320px;
+
+  grid-row: 2;
+  grid-column: 1;
+
+  background-color: #fff;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.popup__overflow-wrap {
+  overflow-y: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .popup__content-wrap {
+    grid-gap: 6px;
+  }
+
+  .popup__close-btn {
+    width: 40px;
+    height: 40px;
+    margin: 0;
+
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .popup__main-content-wrap {
+    grid-template-columns: 430px;
+  }
+}

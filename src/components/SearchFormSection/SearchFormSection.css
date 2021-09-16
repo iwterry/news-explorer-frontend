@@ -1,0 +1,72 @@
+.search-form-section {
+  display: flex;
+  justify-content: center;
+
+  padding: 86px 0 32px;
+
+  background: url(../../images/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+.search-form-section__content-wrap {
+  flex: 0 0 288px;
+}
+
+.search-form-section__heading {
+  margin: 0;
+  margin-bottom: 16px;
+
+  color: #fff;
+  font-family: 'Roboto Slab', serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: calc(40 / 36);
+}
+
+.search-form-section__description {
+  margin: 0;
+  margin-bottom: 122px;
+  
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  line-height: calc(24 / 18);
+}
+
+@media screen and (min-width: 768px) {
+  .search-form-section {
+    padding-top: 104px;
+    padding-bottom: 48px;
+  }
+
+  .search-form-section__content-wrap {
+    flex-basis: 452px;
+  }
+
+  .search-form-section__description {
+    margin-bottom: 48px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .search-form-section {
+    padding-top: 160px;
+    padding-bottom: 80px;
+  }
+
+  .search-form-section__content-wrap {
+    flex-basis: 608px;
+  }
+
+  .search-form-section__heading {
+    margin-bottom: 32px;
+
+    font-size: 60px;
+    line-height: calc(64 / 60);
+  }
+
+  .search-form-section__description {
+    margin-bottom: 88px;
+  }
+}

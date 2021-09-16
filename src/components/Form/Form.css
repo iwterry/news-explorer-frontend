@@ -1,0 +1,128 @@
+.form {
+  --primary-color: #1a1b22;
+  --blue-1: #2f71e5;
+  --inter-font: 'Inter', sans-serif;
+  --roboto-font: 'Roboto', sans-serif;
+  --simulator-gray-color: #b6bcbf;
+
+  display: flex;
+  flex-direction: column;
+
+  text-align: left;
+}
+
+.form__heading {
+  margin: 0;
+  margin-bottom: 17px;
+
+  font-family: var(--roboto-font);
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.16;
+  color: #000;
+}
+
+.form__input-field-group-wrap {
+  margin-bottom: 13px;
+
+  font-family: var(--inter-font);
+  display: flex;
+  flex-direction: column;
+}
+
+.form__input-field-group-wrap:last-of-type {
+  margin-bottom: 0;
+}
+
+.form__input-field-label {
+  margin-bottom: 9px;
+
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--blue-1);
+}
+
+.form__input-field {
+  margin-bottom: 3px;
+  padding: 0;
+  padding-bottom: 10px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+  font-size: 14px;
+  line-height: 1.21;
+  color: #000;
+}
+
+.form__input-field::placeholder {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.form__error-msg {
+  min-height: 15px;
+  margin: 0;
+
+  font-family: var(--inter-font);
+  font-size: 12px;
+  line-height: 1.25;
+  color: #f00;
+
+  visibility: hidden;
+  opacity: 0;
+
+  transition-property: visibility, opacity;
+  transition-duration: 1s;
+  transition-timing-function: linear;
+}
+
+.form__error-msg_visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.form__error-msg_name_form-submission-error {
+  align-self: center;
+}
+
+.form__submit-btn {
+  width: 100%;
+  padding: 20px 0;
+  border: none;
+  border-radius: 100px;
+  margin-top: 3px;
+
+  font-family: var(--roboto-font);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.33;
+  text-align: center;
+  color: #fff;
+  background-color: var(--blue-1);
+
+  cursor: pointer;
+}
+
+.form__submit-btn:hover {
+  background-color: #347eff;
+}
+
+.form__submit-btn:active {
+  background-color: #2a65cc;
+}
+
+.form__submit-btn:disabled {
+  color: var(--simulator-gray-color);
+  background-color: #e6e8e8;
+  cursor: not-allowed;
+}
+
+@media screen and (min-width: 768px) {
+  .form__heading {
+    margin-bottom: 22px;
+    color: var(--primary-color);
+  }
+
+  .form__submit-btn {
+    margin-top: 6px;
+  }
+}
