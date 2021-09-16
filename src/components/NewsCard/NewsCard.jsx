@@ -67,22 +67,22 @@ class NewsCard extends Component {
 
     return (
         <article className="news-card">
-          <header className="news-card__header">
-            <div className="news-card__image-wrap">
-              {this.getInteractionContentWrap()}
+          {this.getInteractionContentWrap()}
+          <a href={newsArticle.url} target="_blank" rel="noreferrer" className="news-card__link">
+            <header className="news-card__header">
               <img src={newsArticle.imageSrc} alt="" className="news-card__image" />
+              <time className="news-card__date" dateTime={newsArticle.publicationDate}>
+                {getFormattedDate(newsArticle.publicationDate)}
+              </time>
+              <h3 className="news-card__heading">{newsArticle.title}</h3>
+            </header>
+            <div className="news-card__body">
+              <p className="news-card__description">{newsArticle.description}</p>
             </div>
-            <time className="news-card__date" dateTime={newsArticle.publicationDate}>
-              {getFormattedDate(newsArticle.publicationDate)}
-            </time>
-            <h3 className="news-card__heading">{newsArticle.title}</h3>
-          </header>  
-          <div className="news-card__body">
-            <p className="news-card__description">{newsArticle.description}</p>
-          </div>
-          <footer className="news-card__footer">
-            <span className="news-card__source">{newsArticle.sourceName}</span>
-          </footer>
+            <footer className="news-card__footer">
+              <span className="news-card__source">{newsArticle.sourceName}</span>
+            </footer>
+          </a>
         </article>
     );
   }
