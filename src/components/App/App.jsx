@@ -282,7 +282,7 @@ function App() {
       </Switch>
       <Footer />
       <Popup isActive={shouldShowErrorPopup} onClose={handleClosePopupError}>
-        <AppError additionalCssClassNamesStr="app-error_popup" />
+        <AppError isUsedInPopup={true} />
       </Popup>
     </CurrentUserContext.Provider>
 
