@@ -10,6 +10,9 @@ import Login from '../Login/Login';
 import Register from '../Register/Register';
 import Footer from '../Footer/Footer';
 
+import Popup from '../Popup/Popup';
+import AppError from '../AppError/AppError';
+
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 import processStatusEnum from '../../utils/processStatusEnum';
@@ -18,8 +21,6 @@ import { getSearchResults } from '../../utils/fakeNewsApi';
 import { createSavedArticle, deleteSavedArticle, getCurrentUser, getSavedArticles, login, register } from '../../utils/fakeMainApi';
 
 import './App.css';
-import Popup from '../Popup/Popup';
-import AppError from '../AppError/AppError';
 
 function App() {
   function getUpdatedSearchResult(newsArticle) {
