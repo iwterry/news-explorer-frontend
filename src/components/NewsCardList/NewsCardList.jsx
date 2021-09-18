@@ -6,6 +6,7 @@ function NewsCardList(props) {
   const {
     newsArticles,
     isSearchResult,
+    isLoggedIn,
     onSave,
     onDelete,
     onUnauthenticatedBookmark,
@@ -19,6 +20,7 @@ function NewsCardList(props) {
           <NewsCard
             newsArticle={newsArticle}
             isSearchResult={isSearchResult}
+            isLoggedIn={isLoggedIn}
             onSave={onSave}
             onDelete={onDelete}
             onUnauthenticatedBookmark={onUnauthenticatedBookmark}

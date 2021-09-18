@@ -87,7 +87,7 @@ class Header extends Component {
 
   render() {
     const { isMobileNavShown } = this.state;
-    const { onLogout } = this.props;
+    const { isLoggedIn, onLogout } = this.props;
     const headerClassNames = this.getHeaderClassNames(); 
 
     return (
@@ -100,6 +100,7 @@ class Header extends Component {
           <Navigation 
             additionalCssClassNamesStr={`header__navigation ${isMobileNavShown ? 'header__navigation_shown' : ''}`} 
             onLogout={onLogout}
+            isLoggedIn={isLoggedIn}
           />
         </div>
       </header>

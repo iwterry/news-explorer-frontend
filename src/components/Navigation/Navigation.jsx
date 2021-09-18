@@ -3,9 +3,8 @@ import { Link, NavLink } from 'react-router-dom';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import './Navigation.css';
 
-function Navigation({ additionalCssClassNamesStr='', onLogout }) {
+function Navigation({ additionalCssClassNamesStr='', isLoggedIn, onLogout }) {
   const currentUser = React.useContext(CurrentUserContext);
-  const isLoggedIn = Boolean(currentUser.email);
 
   return (
     <nav className={`navigation ${additionalCssClassNamesStr}`}>

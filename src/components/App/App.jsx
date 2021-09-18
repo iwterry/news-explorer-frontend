@@ -23,6 +23,33 @@ import { createSavedArticle, deleteSavedArticle, getCurrentUser, getSavedArticle
 import './App.css';
 
 function App() {
+  const ERROR_MESSAGE_401 = 'Please sign in.';
+  const routes = {
+    main: '/',
+    savedNews: '/saved-news',
+    login: '/sign-in',
+    register: '/sign-up',
+  };
+
+  const history = useHistory();
+
+  const [ currentUser, setCurrentUser ] = React.useState({});
+  const [ isSignedIn, setIsSignedIn ] = React.useState(false);
+
+  const [ searchRequestInfo, setSearchRequestInfo ] = React.useState({
+    status: processStatusEnum.NOT_PROCESSED,
+    results: [],
+  });
+
+  const [ savedNewsInfo, setSavedNewsInfo ] = React.useState({
+    status: processStatusEnum.NOT_PROCESSED,
+    results: [],
+  });
+
+  const [ shouldShowErrorPopup, setShouldShowErrorPopup ] = React.useState(false);
+  const [ errorMessage, setErrorMessage ] = React.useState('');
+
+
   function getUpdatedSearchResult(newsArticle) {
     const { results: savedArticles } = savedNewsInfo;
     const savedArticle = savedArticles.find(({ url }) => url === newsArticle.url);
@@ -56,7 +83,7 @@ function App() {
           results: [],
         });
       })
-      .catch((err) => {
+      .catch(() => {
         setSearchRequestInfo({
           status: processStatusEnum.ERROR,
           results: [],
@@ -84,6 +111,9 @@ function App() {
         });
       })
       .catch((err) => {
+        handleErrorsByHttpStatusCode(err.status);
+        if (err.status === 401) return setShouldShowErrorPopup(true);
+
         setSavedNewsInfo({
           status: processStatusEnum.ERROR,
           results: [],
@@ -107,7 +137,10 @@ function App() {
           results: [ ...savedNewsInfo.results, formattedArticle ],
         });
       })
-      .catch(() => setShouldShowErrorPopup(true));
+      .catch((err) => {
+        handleErrorsByHttpStatusCode(err.status);
+        setShouldShowErrorPopup(true);
+      });
   }
 
   function handleDeleteSavedArticle(savedArticleId) {
@@ -141,18 +174,10 @@ function App() {
           results: savedArticlesCopy,
         });
       })
-      .catch(() => setShouldShowErrorPopup(true));
-  }
-
-  function requestCurrentUserInfo(token) {
-    return getCurrentUser(token)
-      .then((currentUserDetails) => {
-        setCurrentUser({
-          name: currentUserDetails.name,
-          email: currentUserDetails.email,
-        });
-      })
-      .catch(() => setShouldShowErrorPopup(true));
+      .catch((err) => {
+        handleErrorsByHttpStatusCode(err.status);
+        setShouldShowErrorPopup(true);
+      });
   }
 
   function handleUnauthenticatedBookmark() {
@@ -167,6 +192,7 @@ function App() {
     return login(userDetails.email, userDetails.password)
       .then(({ token }) => {
         localStorage.setItem('token', token);
+        setIsSignedIn(true);
         return requestCurrentUserInfo(token);
       });
 
@@ -183,47 +209,45 @@ function App() {
   function handleLogout() {
     localStorage.removeItem('token');
     setCurrentUser({});
-    // Using window.location (instead of location from react router)
-    window.location.href = routes.main
+    setIsSignedIn(false);
+    history.push(routes.main);
+  }
+
+  function handleErrorsByHttpStatusCode(statusCode, message='') {
+    if(statusCode === 401) {
+      handleLogout();
+      setErrorMessage(message || ERROR_MESSAGE_401);
+    }
+  }
+  
+  function requestCurrentUserInfo(token) {
+    return getCurrentUser(token)
+      .then((currentUserDetails) => {
+        setCurrentUser({
+          name: currentUserDetails.name,
+          email: currentUserDetails.email,
+        });
+      })
+      .catch((err) => {  
+        handleLogout();
+        if(err.status === 401) setErrorMessage(ERROR_MESSAGE_401);
+        setShouldShowErrorPopup(true);
+      });
   }
 
   function validateSearchQuery(query) {
     return query.trim().length > 1;
   }
-
-  const routes = {
-    main: '/',
-    savedNews: '/saved-news',
-    login: '/sign-in',
-    register: '/sign-up',
-  };
-
-  const history = useHistory();
-
-  const [ currentUser, setCurrentUser ] = React.useState({});
-
-  const [ searchRequestInfo, setSearchRequestInfo ] = React.useState({
-    status: processStatusEnum.NOT_PROCESSED,
-    results: [],
-  });
-
-  const [ savedNewsInfo, setSavedNewsInfo ] = React.useState({
-    status: processStatusEnum.NOT_PROCESSED,
-    results: [],
-  });
-
-  const [ shouldShowErrorPopup, setShouldShowErrorPopup ] = React.useState(false);
-
-  const isUserLoggedIn = Boolean(currentUser.email);
  
   React.useEffect(() => {
-    if (isUserLoggedIn) handleGetSavedArticles();
-  }, [isUserLoggedIn]);
+    if (isSignedIn) handleGetSavedArticles();
+  }, [isSignedIn]);
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
+    setIsSignedIn(true);
     requestCurrentUserInfo(token);
   }, []);
 
@@ -231,7 +255,8 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <Route render={({ location }) => (
         <Header 
-          isSavedNewsHeader={location.pathname === routes.savedNews}  
+          isSavedNewsHeader={location.pathname === routes.savedNews}
+          isLoggedIn={isSignedIn}
           onLogout={handleLogout}
         />
       )}/> 
@@ -249,20 +274,21 @@ function App() {
                 onDelete={handleDeleteSavedArticle}
                 onUnauthenticatedBookmark={handleUnauthenticatedBookmark}
                 validateSearchQuery={validateSearchQuery}
+                isLoggedIn={isSignedIn}
               />
               <Login
                 onLogin={handleLogin}
                 registrationPath={routes.register}
                 history={history}
                 location={location}
-                isLoggedIn={isUserLoggedIn}
+                isLoggedIn={isSignedIn}
                 isReadyToLogin={location.pathname === routes.login}
               />
               <Register
                 onRegister={handleRegister}
                 loginPath={routes.login}
                 history={history}
-                isLoggedIn={isUserLoggedIn}
+                isLoggedIn={isSignedIn}
                 isReadyToRegister={location.pathname === routes.register}
               />
             </>
@@ -272,10 +298,11 @@ function App() {
           Component={SavedNews}
           componentProps={{
             savedNewsInfo: savedNewsInfo,
+            errorMessage: errorMessage,
             requestSavedNews: handleGetSavedArticles,
             onDelete: handleDeleteSavedArticle
           }}
-          isLoggedIn={isUserLoggedIn}
+          isLoggedIn={isSignedIn}
           loginPath={routes.login}
           path={routes.savedNews}
         />
@@ -283,10 +310,9 @@ function App() {
       </Switch>
       <Footer />
       <Popup isActive={shouldShowErrorPopup} onClose={handleClosePopupError}>
-        <AppError isUsedInPopup={true} />
+        <AppError isUsedInPopup={true} message={errorMessage}/>
       </Popup>
     </CurrentUserContext.Provider>
-
   );
 }
 

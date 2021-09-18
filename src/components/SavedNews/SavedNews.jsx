@@ -26,6 +26,7 @@ function SavedNews({ savedNewsInfo, onDelete, requestSavedNews }) {
             <NewsCardList
               newsArticles={newsArticles}
               isSearchResult={false}
+              isLoggedIn={true}
               onDelete={onDelete}
               additionalCssClassNamesStr="saved-news__content saved-news__content_articles"
             />

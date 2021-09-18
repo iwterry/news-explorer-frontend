@@ -10,12 +10,10 @@ class NewsCard extends Component {
   };
 
   getInteractionContentWrap() {
-    const tooltipMainClassName = 'news-card__tooltip';
-    const { newsArticle, isSearchResult } = this.props;
+    const { newsArticle, isSearchResult, isLoggedIn } = this.props;
     const { isBtnDisabled } = this.state;
-    const { email: userEmail } = this.context
-    const isSignedIn = Boolean(userEmail);
-    const tooltipClassNames = `${tooltipMainClassName} ${isSignedIn ? `${tooltipMainClassName}_inactive` : ''}`;
+    const tooltipMainClassName = 'news-card__tooltip';
+    const tooltipClassNames = `${tooltipMainClassName} ${isLoggedIn ? `${tooltipMainClassName}_inactive` : ''}`;
 
     if (!isSearchResult) {
       return (
@@ -26,7 +24,7 @@ class NewsCard extends Component {
             <button 
               className="news-card__btn"
               aria-label="delete"
-              onClick={this.getOnClickHandler(isSignedIn, newsArticle)} 
+              onClick={this.getOnClickHandler()} 
               disabled={isBtnDisabled}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" className="news-card__icon news-card__icon_for_delete" aria-hidden={true}>
@@ -45,7 +43,7 @@ class NewsCard extends Component {
         <button 
           className="news-card__btn"
           aria-label={newsArticle.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-          onClick={this.getOnClickHandler(isSignedIn, newsArticle)}
+          onClick={this.getOnClickHandler()}
           disabled={isBtnDisabled}
         >
           <svg
@@ -63,10 +61,17 @@ class NewsCard extends Component {
     );
   }
 
-  getOnClickHandler(isSignedIn, newsArticle) {
-    const { onDelete, onSave, onUnauthenticatedBookmark, isSearchResult } = this.props;
+  getOnClickHandler() {
+    const {
+      onDelete,
+      onSave, 
+      onUnauthenticatedBookmark,
+      isSearchResult,
+      isLoggedIn,
+      newsArticle
+    } = this.props;
 
-    if (!isSignedIn) return onUnauthenticatedBookmark;
+    if (!isLoggedIn) return onUnauthenticatedBookmark;
 
     return async () => {
       this.setState({ isBtnDisabled: true });
@@ -114,7 +119,5 @@ class NewsCard extends Component {
     );
   }
 }
-
-NewsCard.contextType = CurrentUserContext;
 
 export default NewsCard;

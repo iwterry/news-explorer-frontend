@@ -16,6 +16,8 @@ class Main extends Component {
     const {
       validateSearchQuery,
       searchRequestInfo,
+      errorMessage,
+      isLoggedIn,
       onSearch,
       onSave,
       onDelete,
@@ -39,6 +41,7 @@ class Main extends Component {
           <SearchResultsSection 
             results={searchRequestInfo.results}
             additionalCssClassNamesStr={this.bodyClassName}
+            isLoggedIn={isLoggedIn}
             onSave={onSave}
             onDelete={onDelete}
             onUnauthenticatedBookmark={onUnauthenticatedBookmark}
@@ -48,7 +51,7 @@ class Main extends Component {
           <NotFound additionalCssClassNamesStr={this.bodyClassName}/>
         )}
         {(searchRequestInfo.status === processStatusEnum.ERROR) && (
-          <AppError additionalCssClassNamesStr={this.bodyClassName}/>
+          <AppError additionalCssClassNamesStr={this.bodyClassName} message={errorMessage}/>
         )}
 
         <About />
