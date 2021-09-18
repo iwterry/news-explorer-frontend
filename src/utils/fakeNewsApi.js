@@ -83,6 +83,7 @@ export function getSearchResults(query) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({ articles: data });
+      // reject(new Error('testing error'));
     }, 500);
   });
 }

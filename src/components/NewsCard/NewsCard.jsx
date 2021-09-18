@@ -5,9 +5,17 @@ import { getFormattedDate } from '../../utils/helpers';
 import './NewsCard.css';
 
 class NewsCard extends Component {
+  state = {
+    isBtnDisabled: false,
+  };
+
   getInteractionContentWrap() {
     const tooltipMainClassName = 'news-card__tooltip';
-    const { onDelete, newsArticle, isSearchResult } = this.props;
+    const { newsArticle, isSearchResult } = this.props;
+    const { isBtnDisabled } = this.state;
+    const { email: userEmail } = this.context
+    const isSignedIn = Boolean(userEmail);
+    const tooltipClassNames = `${tooltipMainClassName} ${isSignedIn ? `${tooltipMainClassName}_inactive` : ''}`;
 
     if (!isSearchResult) {
       return (
@@ -15,8 +23,13 @@ class NewsCard extends Component {
           <span className="news-card__category">{newsArticle.keyword}</span>
           <div className={tooltipMainClassName}>
             <span className="news-card__tooltip-text">Remove from saved</span>
-            <button className="news-card__btn" aria-label="delete" onClick={() => onDelete(newsArticle._id)}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" className="news-card__icon" aria-hidden={true}>
+            <button 
+              className="news-card__btn"
+              aria-label="delete"
+              onClick={this.getOnClickHandler(isSignedIn, newsArticle)} 
+              disabled={isBtnDisabled}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" className="news-card__icon news-card__icon_for_delete" aria-hidden={true}>
                 <path fillRule="evenodd" d="M15 3H9v2H3v2h18V5h-6V3zM5 9v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9h-2v11H7V9H5zm4 0v9h2V9H9zm4 0v9h2V9h-2z"/>
               </svg>
             </button>
@@ -24,10 +37,6 @@ class NewsCard extends Component {
         </div>
       );
     }
-
-    const { email: userEmail } = this.context
-    const isSignedIn = Boolean(userEmail);
-    const tooltipClassNames = `${tooltipMainClassName} ${isSignedIn ? `${tooltipMainClassName}_inactive` : ''}`;
     
     return (
       <div className="news-card__interaction-content-wrap">
@@ -36,13 +45,14 @@ class NewsCard extends Component {
         <button 
           className="news-card__btn"
           aria-label={newsArticle.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-          onClick={this.getSearchResultOnClickHandler(isSignedIn, newsArticle)}
+          onClick={this.getOnClickHandler(isSignedIn, newsArticle)}
+          disabled={isBtnDisabled}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg" 
             width="24" 
             height="24" 
-            className={`news-card__icon ${newsArticle.isBookmarked ? 'news-card__icon_marked' : ''}`} 
+            className={`news-card__icon news-card__icon_for_${newsArticle.isBookmarked ? 'bookmark-marked' : 'bookmark'}`} 
             aria-hidden={true}
           >
             <path d="M11.382 15.714L6 19.943V4h12v15.942l-5.382-4.229-.618-.485-.618.485z" strokeWidth="2"/>
@@ -53,12 +63,29 @@ class NewsCard extends Component {
     );
   }
 
-  getSearchResultOnClickHandler(isSignedIn, newsArticle) {
-    const { onDelete, onSave, onUnauthenticatedBookmark } = this.props;
-    if (isSignedIn) {
-      return newsArticle.isBookmarked ? () => onDelete(newsArticle._id) : () => onSave(newsArticle);
-    } else {
-      return onUnauthenticatedBookmark
+  getOnClickHandler(isSignedIn, newsArticle) {
+    const { onDelete, onSave, onUnauthenticatedBookmark, isSearchResult } = this.props;
+
+    if (!isSignedIn) return onUnauthenticatedBookmark;
+
+    return async () => {
+      this.setState({ isBtnDisabled: true });
+
+      if (!isSearchResult) {
+        return onDelete(newsArticle._id);
+      }
+
+      // Only need the button to be enabled after click handler from props finishes
+      // if card is for a search result and user is signed in.
+      try {
+        await ( 
+          newsArticle.isBookmarked ? onDelete(newsArticle._id) : onSave(newsArticle)
+        );
+        this.setState({ isBtnDisabled: false });
+      } catch(err) {
+        this.setState({ isBtnDisabled: false });
+        throw err; // should not attempt to handle error here
+      }
     }
   }
 

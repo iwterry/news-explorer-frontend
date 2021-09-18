@@ -76,21 +76,29 @@
   cursor: pointer;
 }
 
+.news-card__btn:disabled {
+  cursor: wait;
+}
+
 .news-card__icon {
-  fill: #fff;
-  stroke: #b6bcbf;
+  --icon-color: #b6bcbf;
+}
+
+.news-card__icon_for_delete {
+  fill: var(--icon-color);
+}
+
+.news-card__icon_for_bookmark {
+  stroke: var(--icon-color);
+  fill: none;
 }
 
 .news-card__tooltip:hover .news-card__icon {
-  stroke: #1a1b22;
+  --icon-color: #1a1b22;
 }
 
-.news-card__icon_marked {
+.news-card__icon_for_bookmark-marked {
   fill: #2f71e5;
-  stroke: none;
-}
-
-.news-card__tooltip:hover .news-card__icon_marked {
   stroke: none;
 }
 

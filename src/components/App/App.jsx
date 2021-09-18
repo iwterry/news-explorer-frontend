@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Redirect, useHistory, useLocation } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
@@ -18,6 +18,8 @@ import { getSearchResults } from '../../utils/fakeNewsApi';
 import { createSavedArticle, deleteSavedArticle, getCurrentUser, getSavedArticles, login, register } from '../../utils/fakeMainApi';
 
 import './App.css';
+import Popup from '../Popup/Popup';
+import AppError from '../AppError/AppError';
 
 function App() {
   function getUpdatedSearchResult(newsArticle) {
@@ -104,9 +106,7 @@ function App() {
           results: [ ...savedNewsInfo.results, formattedArticle ],
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(() => setShouldShowErrorPopup(true));
   }
 
   function handleDeleteSavedArticle(savedArticleId) {
@@ -140,9 +140,7 @@ function App() {
           results: savedArticlesCopy,
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(() => setShouldShowErrorPopup(true));
   }
 
   function requestCurrentUserInfo(token) {
@@ -152,12 +150,16 @@ function App() {
           name: currentUserDetails.name,
           email: currentUserDetails.email,
         });
-
-      });
+      })
+      .catch(() => setShouldShowErrorPopup(true));
   }
 
   function handleUnauthenticatedBookmark() {
     history.push(routes.register);
+  }
+
+  function handleClosePopupError() {
+    setShouldShowErrorPopup(false);
   }
 
   function handleLogin(userDetails) {
@@ -167,7 +169,9 @@ function App() {
         return requestCurrentUserInfo(token);
       });
 
-      // NOTE: there is no "catch" if login request fails because the Form component will handle those errors
+      // NOTE: there is no "catch" method
+      //  - if login request fails the Form component will handle it
+      //  - if user info request fails the requestCurrentUserInfo function will handle it
   }
 
   function handleRegister(userDetails) {
@@ -194,7 +198,7 @@ function App() {
   };
 
   const history = useHistory();
-  // const location = useLocation();
+
   const [ currentUser, setCurrentUser ] = React.useState({});
 
   const [ searchRequestInfo, setSearchRequestInfo ] = React.useState({
@@ -207,23 +211,19 @@ function App() {
     results: [],
   });
 
+  const [ shouldShowErrorPopup, setShouldShowErrorPopup ] = React.useState(false);
+
   const isUserLoggedIn = Boolean(currentUser.email);
  
   React.useEffect(() => {
-    console.log('checking saved articles')
-    if (isUserLoggedIn) {
-      console.log('found saved articles');
-      handleGetSavedArticles();
-    }
+    if (isUserLoggedIn) handleGetSavedArticles();
   }, [isUserLoggedIn]);
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    console.log(token);
-    requestCurrentUserInfo(token)
-      .catch((err) => console.log(err));;
+    requestCurrentUserInfo(token);
   }, []);
 
   return (
@@ -254,13 +254,14 @@ function App() {
                 registrationPath={routes.register}
                 history={history}
                 location={location}
-                isLoggedIn={Boolean(currentUser.email)}
+                isLoggedIn={isUserLoggedIn}
                 isReadyToLogin={location.pathname === routes.login}
               />
               <Register
                 onRegister={handleRegister}
                 loginPath={routes.login}
                 history={history}
+                isLoggedIn={isUserLoggedIn}
                 isReadyToRegister={location.pathname === routes.register}
               />
             </>
@@ -280,6 +281,9 @@ function App() {
         <Redirect to={routes.main} />
       </Switch>
       <Footer />
+      <Popup isActive={shouldShowErrorPopup} onClose={handleClosePopupError}>
+        <AppError additionalCssClassNamesStr="app-error_popup" />
+      </Popup>
     </CurrentUserContext.Provider>
 
   );

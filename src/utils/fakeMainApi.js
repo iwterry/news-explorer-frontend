@@ -48,6 +48,7 @@ export function createSavedArticle(data) {
       const newArticle = { ...data, _id: String(++counter) }
       savedArticles.push(newArticle);
       resolve({ ...newArticle });
+      // reject(new Error('testing error popup'));
     }, TIME_TO_TAKE);
   });
 }
@@ -70,7 +71,7 @@ export function getCurrentUser(token) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if(!token) return reject(new Error('token required for to get current user data'));
-
+      // reject('testing error popup');
       resolve({
         name: currentUser.name,
         email: currentUser.email,
