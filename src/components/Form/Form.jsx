@@ -26,7 +26,6 @@ class Form extends Component {
     ) return;
 
     this.setState(this.getResettedState());
-    
   }
 
   handleInputChange = ({ target }) => {
@@ -49,17 +48,14 @@ class Form extends Component {
   handleSubmit = async (evt) => {
     evt.preventDefault();
 
-    const errors = { ...this.state.errors };
-
     this.setState({ isSubmitting: true });
     try {
-      await this.props.onSubmit(this.state.fields)
-      this.setState({ ...this.getResettedState() });
+      await this.props.onSubmit(this.state.fields);
     } catch(err) {
+      const errors = { ...this.state.errors };
       errors.form = err.message;
+      this.setState({ errors, isSubmitting: false });
     }
-    
-    this.setState({ errors, isSubmitting: false });
   };
 
   getResettedState() {
