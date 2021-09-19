@@ -15,9 +15,7 @@ class Popup extends Component {
   }
   
   handleEscKeyToCloseOverlay = ({ key }) => {
-    console.log('before closing esc');
     if (key && key.toLowerCase() === 'escape') {
-      console.log('closing using esc');
       this.close();
     } 
   }
