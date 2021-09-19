@@ -7,7 +7,7 @@ import SavedNewsHeader from '../SavedNewsHeader/SavedNewsHeader';
 
 import './SavedNews.css';
 
-function SavedNews({ savedNewsInfo, onDelete, requestSavedNews }) {
+function SavedNews({ savedNewsInfo, onDelete, requestSavedNews, urlsOfArticlesBeingProcessed }) {
   const { results: newsArticles, status } = savedNewsInfo;
   
   React.useEffect(() => {
@@ -27,6 +27,7 @@ function SavedNews({ savedNewsInfo, onDelete, requestSavedNews }) {
               newsArticles={newsArticles}
               isSearchResult={false}
               isLoggedIn={true}
+              urlsOfArticlesBeingProcessed={urlsOfArticlesBeingProcessed}
               onDelete={onDelete}
               additionalCssClassNamesStr="saved-news__content saved-news__content_articles"
             />

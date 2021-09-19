@@ -1,17 +1,11 @@
 import { Component } from 'react';
-import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { getFormattedDate } from '../../utils/helpers';
 
 import './NewsCard.css';
 
 class NewsCard extends Component {
-  state = {
-    isBtnDisabled: false,
-  };
-
   getInteractionContentWrap() {
-    const { newsArticle, isSearchResult, isLoggedIn } = this.props;
-    const { isBtnDisabled } = this.state;
+    const { newsArticle, isSearchResult, isLoggedIn, isBeingProcessed } = this.props;
     const tooltipMainClassName = 'news-card__tooltip';
     const tooltipClassNames = `${tooltipMainClassName} ${isLoggedIn ? `${tooltipMainClassName}_inactive` : ''}`;
 
@@ -24,8 +18,8 @@ class NewsCard extends Component {
             <button 
               className="news-card__btn"
               aria-label="delete"
-              onClick={this.getOnClickHandler()} 
-              disabled={isBtnDisabled}
+              onClick={this.getOnClickHandler} 
+              disabled={isBeingProcessed}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" className="news-card__icon news-card__icon_for_delete" aria-hidden={true}>
                 <path fillRule="evenodd" d="M15 3H9v2H3v2h18V5h-6V3zM5 9v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9h-2v11H7V9H5zm4 0v9h2V9H9zm4 0v9h2V9h-2z"/>
@@ -43,8 +37,8 @@ class NewsCard extends Component {
         <button 
           className="news-card__btn"
           aria-label={newsArticle.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-          onClick={this.getOnClickHandler()}
-          disabled={isBtnDisabled}
+          onClick={this.getOnClickHandler}
+          disabled={isBeingProcessed}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg" 
@@ -61,37 +55,17 @@ class NewsCard extends Component {
     );
   }
 
-  getOnClickHandler() {
+  getOnClickHandler = () => {
     const {
       onDelete,
       onSave, 
       onUnauthenticatedBookmark,
-      isSearchResult,
       isLoggedIn,
       newsArticle
     } = this.props;
 
-    if (!isLoggedIn) return onUnauthenticatedBookmark;
-
-    return async () => {
-      this.setState({ isBtnDisabled: true });
-
-      if (!isSearchResult) {
-        return onDelete(newsArticle._id);
-      }
-
-      // Only need the button to be enabled after click handler from props finishes
-      // if card is for a search result and user is signed in.
-      try {
-        await ( 
-          newsArticle.isBookmarked ? onDelete(newsArticle._id) : onSave(newsArticle)
-        );
-        this.setState({ isBtnDisabled: false });
-      } catch(err) {
-        this.setState({ isBtnDisabled: false });
-        throw err; // should not attempt to handle error here
-      }
-    }
+    if (!isLoggedIn) return onUnauthenticatedBookmark();
+    newsArticle.isBookmarked ? onDelete(newsArticle._id, newsArticle.url) : onSave(newsArticle);
   }
 
   render() {

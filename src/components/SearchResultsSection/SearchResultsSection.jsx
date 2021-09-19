@@ -21,6 +21,7 @@ class SearchResultsSection extends Component {
     const {
       results,
       isLoggedIn,
+      urlsOfArticlesBeingProcessed,
       additionalCssClassNamesStr='',
       onSave,
       onDelete,
@@ -37,6 +38,7 @@ class SearchResultsSection extends Component {
           newsArticles={resultsShown}
           isSearchResult={true}
           isLoggedIn={isLoggedIn}
+          urlsOfArticlesBeingProcessed={urlsOfArticlesBeingProcessed}
           onSave={onSave}
           onDelete={onDelete}
           onUnauthenticatedBookmark={onUnauthenticatedBookmark}

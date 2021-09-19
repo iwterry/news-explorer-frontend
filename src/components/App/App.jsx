@@ -17,8 +17,8 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 import processStatusEnum from '../../utils/processStatusEnum';
 import { formatCardDataForMainApi, formatSavedArticlesForCard, formatSearchResultsForCard } from '../../utils/helpers';
-import { getSearchResults } from '../../utils/fakeNewsApi';
-import { createSavedArticle, deleteSavedArticle, getCurrentUser, getSavedArticles, login, register } from '../../utils/fakeMainApi';
+import NewsApi from '../../utils/NewsApi';
+import MainApi from '../../utils/MainApi';
 
 import './App.css';
 
@@ -46,6 +46,7 @@ function App() {
     results: [],
   });
 
+  const [ urlsOfArticlesBeingProcessed, setUrlsOfArticlesBeingProcessed ] = React.useState({});
   const [ shouldShowErrorPopup, setShouldShowErrorPopup ] = React.useState(false);
   const [ errorMessage, setErrorMessage ] = React.useState('');
 
@@ -70,8 +71,10 @@ function App() {
       status: processStatusEnum.PROCESSING,
     });
 
-    return getSearchResults(query)
-      .then(({ articles }) => {
+    return NewsApi.getSearchResults(query)
+      .then(({ status: newsApiStatus, articles }) => {
+        if (newsApiStatus === 'error') throw new Error();
+
         if(articles.length > 0) {
           return setSearchRequestInfo({
             status: processStatusEnum.RESULTS_FOUND,
@@ -97,7 +100,7 @@ function App() {
       status: processStatusEnum.PROCESSING,
     });
     
-    return getSavedArticles()
+    return MainApi.getSavedArticles()
       .then((savedArticles) => {
         if(savedArticles.length > 0) {
           return setSavedNewsInfo({
@@ -122,7 +125,9 @@ function App() {
   }
 
   function handleSaveArticle(articleCardData) {
-    return createSavedArticle(formatCardDataForMainApi(articleCardData))
+    setUrlsOfArticlesBeingProcessed({ ...urlsOfArticlesBeingProcessed, [articleCardData.url]: true });
+
+    return MainApi.createSavedArticle(formatCardDataForMainApi(articleCardData))
       .then((savedNewsArticle) => {
         const formattedArticle = formatSavedArticlesForCard(savedNewsArticle);
         const { results } = searchRequestInfo;
@@ -140,11 +145,18 @@ function App() {
       .catch((err) => {
         handleErrorsByHttpStatusCode(err.status);
         setShouldShowErrorPopup(true);
+      })
+      .finally(() => {
+        const urls = { ...urlsOfArticlesBeingProcessed };
+        delete urls[articleCardData.url];
+        setUrlsOfArticlesBeingProcessed(urls);
       });
   }
 
-  function handleDeleteSavedArticle(savedArticleId) {
-    return deleteSavedArticle(savedArticleId)
+  function handleDeleteSavedArticle(savedArticleId, savedArticleUrl) {
+    setUrlsOfArticlesBeingProcessed({ ...urlsOfArticlesBeingProcessed, [savedArticleUrl]: true });
+
+    return MainApi.deleteSavedArticle(savedArticleId)
       .then(() => {
         const { results } = searchRequestInfo;
         const index = results.findIndex(({ _id }) => _id === savedArticleId);
@@ -177,6 +189,11 @@ function App() {
       .catch((err) => {
         handleErrorsByHttpStatusCode(err.status);
         setShouldShowErrorPopup(true);
+      })
+      .finally(() => {
+        const urls = { ...urlsOfArticlesBeingProcessed };
+        delete urls[savedArticleUrl];
+        setUrlsOfArticlesBeingProcessed(urls);
       });
   }
 
@@ -189,11 +206,13 @@ function App() {
   }
 
   function handleLogin(userDetails) {
-    return login(userDetails.email, userDetails.password)
+    return MainApi.login(userDetails.email, userDetails.password)
       .then(({ token }) => {
         localStorage.setItem('token', token);
+
+        MainApi.authToken = token; 
         setIsSignedIn(true);
-        return requestCurrentUserInfo(token);
+        return requestCurrentUserInfo();
       });
 
       // NOTE: there is no "catch" method
@@ -202,7 +221,7 @@ function App() {
   }
 
   function handleRegister(userDetails) {
-    return register(userDetails.username, userDetails.email, userDetails.password);
+    return MainApi.register(userDetails.username, userDetails.email, userDetails.password);
     // NOTE: there is no "catch" because the Form component will handle the errors
   }
 
@@ -220,8 +239,8 @@ function App() {
     }
   }
   
-  function requestCurrentUserInfo(token) {
-    return getCurrentUser(token)
+  function requestCurrentUserInfo() {
+    return MainApi.getCurrentUser()
       .then((currentUserDetails) => {
         setCurrentUser({
           name: currentUserDetails.name,
@@ -230,7 +249,7 @@ function App() {
       })
       .catch((err) => {  
         handleLogout();
-        if(err.status === 401) setErrorMessage(ERROR_MESSAGE_401);
+        if (err.status === 401) setErrorMessage(ERROR_MESSAGE_401);
         setShouldShowErrorPopup(true);
       });
   }
@@ -247,8 +266,9 @@ function App() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
+    MainApi.authToken = token;
     setIsSignedIn(true);
-    requestCurrentUserInfo(token);
+    requestCurrentUserInfo();
   }, []);
 
   return (
@@ -275,6 +295,7 @@ function App() {
                 onUnauthenticatedBookmark={handleUnauthenticatedBookmark}
                 validateSearchQuery={validateSearchQuery}
                 isLoggedIn={isSignedIn}
+                urlsOfArticlesBeingProcessed={urlsOfArticlesBeingProcessed}
               />
               <Login
                 onLogin={handleLogin}
@@ -299,6 +320,7 @@ function App() {
           componentProps={{
             savedNewsInfo: savedNewsInfo,
             errorMessage: errorMessage,
+            urlsOfArticlesBeingProcessed: urlsOfArticlesBeingProcessed,
             requestSavedNews: handleGetSavedArticles,
             onDelete: handleDeleteSavedArticle
           }}

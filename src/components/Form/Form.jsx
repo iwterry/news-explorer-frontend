@@ -1,10 +1,11 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import './Form.css';
 
 class Form extends Component {
   constructor(props) {
     super(props);
 
+    this.formRef = React.createRef();
     const partsOfState = this.getResettedState();
 
     this.state = {
@@ -16,6 +17,11 @@ class Form extends Component {
 
   componentDidMount() {
     this.setState({ hasComponentMounted: true });
+    this.updateFormValidityState();
+  }
+
+  updateFormValidityState() {
+    this.setState({ isFormValid: this.formRef.current.checkValidity() });
   }
 
   componentDidUpdate(prevProps) {
@@ -25,7 +31,12 @@ class Form extends Component {
       || this.state.isSubmitting
     ) return;
 
+ 
     this.setState(this.getResettedState());
+    // delay so that DOM can update before checking validity of form; otherwise, it will not work
+    setTimeout(() => {
+      this.updateFormValidityState();
+    }, 0);
   }
 
   handleInputChange = ({ target }) => {
@@ -41,8 +52,10 @@ class Form extends Component {
           [fieldName]: this.getInputFieldError(fieldName).message, 
         },
         form: this.state.errors.form,
-      },
+      }
     });
+
+    this.updateFormValidityState();
   };
 
   handleSubmit = async (evt) => {
@@ -75,15 +88,8 @@ class Form extends Component {
     return state;
   }
 
-  checkIfAnyInvalidInputField() {
-    const { fields } = this.state;
-    return Object.keys(fields).some((fieldName) => this.getInputFieldError(fieldName).hasError);
-  }
-
   getInputFieldError(fieldName) {
-    const { formName } = this.props.formInfo;
-    const fieldDomElement = document.forms[formName].elements[fieldName];
-
+    const fieldDomElement = this.formRef.current.elements[fieldName];
     return {
       hasError: !fieldDomElement.validity.valid,
       message: fieldDomElement.validationMessage
@@ -134,7 +140,7 @@ class Form extends Component {
   }
 
   render() {
-    const { hasComponentMounted, isSubmitting } = this.state;
+    const { isFormValid, isSubmitting } = this.state;
     const { form: formSubmissionError } = this.state.errors;
     const { formInfo } = this.props;
     const { 
@@ -146,7 +152,7 @@ class Form extends Component {
     } = formInfo;
 
     return (
-      <form name={formName} className="form" noValidate={true} onSubmit={this.handleSubmit}>
+      <form name={formName} className="form" noValidate={true} onSubmit={this.handleSubmit} ref={this.formRef}> 
         <h3 className="form__heading">{formHeading}</h3>
         {fieldsData.map((fieldData) => this.renderInputFieldGroup(fieldData))}
         <span className={
@@ -157,7 +163,7 @@ class Form extends Component {
         <button 
           type="submit" 
           className="form__submit-btn" 
-          disabled={(hasComponentMounted && this.checkIfAnyInvalidInputField()) || isSubmitting}
+          disabled={ !isFormValid || isSubmitting}
         >
           { isSubmitting ? submitBtnLabelWhenSubmitting : submitBtnLabel }
         </button>

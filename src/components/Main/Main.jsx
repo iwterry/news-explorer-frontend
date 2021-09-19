@@ -18,6 +18,7 @@ class Main extends Component {
       searchRequestInfo,
       errorMessage,
       isLoggedIn,
+      urlsOfArticlesBeingProcessed,
       onSearch,
       onSave,
       onDelete,
@@ -42,6 +43,7 @@ class Main extends Component {
             results={searchRequestInfo.results}
             additionalCssClassNamesStr={this.bodyClassName}
             isLoggedIn={isLoggedIn}
+            urlsOfArticlesBeingProcessed={urlsOfArticlesBeingProcessed}
             onSave={onSave}
             onDelete={onDelete}
             onUnauthenticatedBookmark={onUnauthenticatedBookmark}
