@@ -30,6 +30,8 @@ const fields = {
     validation: {
       type: 'text',
       required: true,
+      minLength: 2,
+      maxLength: 30,
     },
   },
 };

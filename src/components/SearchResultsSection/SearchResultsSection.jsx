@@ -18,7 +18,15 @@ class SearchResultsSection extends Component {
 
   render() {
     const { state } = this;
-    const { results, onSave, onDelete, additionalCssClassNamesStr, onUnauthenticatedBookmark } = this.props;
+    const {
+      results,
+      isLoggedIn,
+      urlsOfArticlesBeingProcessed,
+      additionalCssClassNamesStr='',
+      onSave,
+      onDelete,
+      onUnauthenticatedBookmark,
+    } = this.props;
 
     const hasAnyMore = state.limit < results.length;
     const resultsShown = results.slice(0, Math.min(state.limit, results.length));
@@ -29,6 +37,8 @@ class SearchResultsSection extends Component {
         <NewsCardList
           newsArticles={resultsShown}
           isSearchResult={true}
+          isLoggedIn={isLoggedIn}
+          urlsOfArticlesBeingProcessed={urlsOfArticlesBeingProcessed}
           onSave={onSave}
           onDelete={onDelete}
           onUnauthenticatedBookmark={onUnauthenticatedBookmark}

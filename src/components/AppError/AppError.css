@@ -1,0 +1,28 @@
+.app-error {
+  --primary-colory: #1a1b22;
+  --simulator-gray-color: #b6bcbf;
+}
+
+.app-error_popup {
+  padding: 15px;
+}
+
+.app-error__heading {
+  display: block;
+  margin: 0;
+  margin-bottom: 16px;
+
+  font-family: 'Roboto Slab', serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--primary-colory);
+}
+
+.app-error__message {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  line-height: 1.33;
+  color: var(--simulator-gray-color);
+}
